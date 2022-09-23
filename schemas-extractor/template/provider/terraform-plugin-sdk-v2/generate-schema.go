@@ -3,6 +3,7 @@ package main
 //noinspection GoUnresolvedReference
 import (
 	prvdr "__PKG_PREFIX__/__PKG_NAME__"
+	"context"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"encoding/json"
@@ -294,8 +295,11 @@ type ResourceProviderSchema struct {
 
 func main() {
 	var provider *schema.Provider
+	ctx := context.Background()
+	if ctx == nil {
+	}
 	//noinspection GoUnresolvedReference
-	provider = __PROVIDER_CONSTR__
+	__PROVIDER_VARS__ = __PROVIDER_CONSTR__
 	Generate(provider, "__NAME__", "__OUT__")
 }
 

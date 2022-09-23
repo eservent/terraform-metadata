@@ -42,12 +42,14 @@ cloudscale
 cloudsigma
 cloudsmith
 cloudstack
+cloudvision
 cobbler
 codefresh
 cohesity
 configcat
 constellix
 consul
+coralogix
 datadog
 dcnm
 digitalocean
@@ -96,7 +98,10 @@ influxdb
 infoblox
 intersight
 ionoscloud
+ionosdeveloper
 jdcloud
+kaleido
+kion
 ksyun
 kubernetes
 kubernetes-alpha
@@ -117,6 +122,9 @@ mso
 mysql
 ncloud
 netlify
+netooze
+netris
+netskope
 newrelic
 ngrok
 nks
@@ -157,6 +165,7 @@ rancher2
 random
 rightscale
 rke
+rockset
 rollbar
 rubrik
 rundeck
@@ -164,6 +173,7 @@ runscope
 scaleway
 sdm
 sdwan
+seeweb
 selectel
 sematext
 shipa
@@ -183,6 +193,7 @@ tencentcloud
 terraform
 test
 tfe
+thousandeyes
 thunder
 time
 tls
@@ -204,3 +215,5 @@ vultr
 waapm
 wavefront
 yandex
+zia
+zpa

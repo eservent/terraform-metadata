@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.27.1",
+  "version": "v0.36.1",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -217,6 +217,62 @@
         "Computed": true
       }
     },
+    "tfe_organization_module_sharing": {
+      "module_consumers": {
+        "Type": "List",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tfe_organization_run_task": {
+      "category": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "task"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "hmac_key": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "tfe_organization_token": {
       "force_regenerate": {
         "Type": "Bool",
@@ -361,19 +417,32 @@
     "tfe_registry_module": {
       "module_provider": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "name": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "organization": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "registry_name": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "vcs_repo": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "MaxItems": 1,
         "MinItems": 1,
         "IsBlock": true,
@@ -467,6 +536,14 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "manage_modules": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "manage_policies": {
               "Type": "Bool",
               "Optional": true,
@@ -476,6 +553,22 @@
               }
             },
             "manage_policy_overrides": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "manage_providers": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "manage_run_tasks": {
               "Type": "Bool",
               "Optional": true,
               "Default": {
@@ -502,6 +595,10 @@
           }
         }
       },
+      "sso_team_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "visibility": {
         "Type": "String",
         "Optional": true,
@@ -526,6 +623,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "run_tasks": {
+              "Type": "Bool",
+              "Required": true
+            },
             "runs": {
               "Type": "String",
               "Required": true
@@ -607,6 +708,56 @@
         "Computed": true
       }
     },
+    "tfe_terraform_version": {
+      "beta": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "deprecated": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "deprecated_reason": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "official": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "sha": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      },
+      "version": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "tfe_variable": {
       "category": {
         "Type": "String",
@@ -646,9 +797,48 @@
           "Type": "string"
         }
       },
+      "variable_set_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "workspace_id": {
         "Type": "String",
+        "Optional": true
+      }
+    },
+    "tfe_variable_set": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "global": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "workspace_ids"
+        ],
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "name": {
+        "Type": "String",
         "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "tfe_workspace": {
@@ -728,6 +918,7 @@
       "remote_state_consumer_ids": {
         "Type": "Set",
         "Optional": true,
+        "Computed": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -772,9 +963,24 @@
         "Optional": true,
         "Computed": true
       },
+      "trigger_patterns": {
+        "Type": "List",
+        "Optional": true,
+        "ConflictsWith": [
+          "trigger_prefixes"
+        ],
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "trigger_prefixes": {
         "Type": "List",
         "Optional": true,
+        "ConflictsWith": [
+          "trigger_patterns"
+        ],
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -810,6 +1016,14 @@
             "oauth_token_id": {
               "Type": "String",
               "Required": true
+            },
+            "tags_regex": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "trigger_patterns",
+                "trigger_prefixes"
+              ]
             }
           }
         }
@@ -820,6 +1034,30 @@
         "Default": {
           "Type": "string"
         }
+      }
+    },
+    "tfe_workspace_run_task": {
+      "enforcement_level": {
+        "Type": "String",
+        "Required": true
+      },
+      "task_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tfe_workspace_variable_set": {
+      "variable_set_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
       }
     }
   },
@@ -938,6 +1176,32 @@
         "Computed": true
       }
     },
+    "tfe_organization_run_task": {
+      "category": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "tfe_organizations": {
       "admin": {
         "Type": "Bool",
@@ -985,6 +1249,10 @@
       "organization": {
         "Type": "String",
         "Required": true
+      },
+      "sso_team_id": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "tfe_team_access": {
@@ -1000,6 +1268,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "run_tasks": {
+              "Type": "Bool",
+              "Computed": true
+            },
             "runs": {
               "Type": "String",
               "Computed": true
@@ -1030,6 +1302,44 @@
       "workspace_id": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "tfe_variable_set": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "global": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "variable_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "workspace_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "tfe_variables": {
@@ -1103,6 +1413,10 @@
           }
         }
       },
+      "variable_set_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "variables": {
         "Type": "List",
         "Computed": true,
@@ -1140,7 +1454,7 @@
       },
       "workspace_id": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "tfe_workspace": {
@@ -1231,6 +1545,15 @@
         "Type": "String",
         "Computed": true
       },
+      "trigger_patterns": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "trigger_prefixes": {
         "Type": "List",
         "Computed": true,
@@ -1263,6 +1586,10 @@
             "oauth_token_id": {
               "Type": "String",
               "Computed": true
+            },
+            "tags_regex": {
+              "Type": "String",
+              "Computed": true
             }
           }
         }
@@ -1273,6 +1600,15 @@
       }
     },
     "tfe_workspace_ids": {
+      "exclude_tags": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "full_names": {
         "Type": "Map",
         "Computed": true
@@ -1302,6 +1638,20 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "tfe_workspace_run_task": {
+      "enforcement_level": {
+        "Type": "String",
+        "Computed": true
+      },
+      "task_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
       }
     }
   }

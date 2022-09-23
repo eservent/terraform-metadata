@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.2.1",
+  "version": "v3.8.2",
   "provider": {
     "add_address_to_env": {
       "Type": "String",
@@ -147,6 +147,12 @@
       "Description": "Set this to true only if the target Vault server is an insecure development instance.",
       "DefaultFunc": "ENV(VAULT_SKIP_VERIFY)"
     },
+    "tls_server_name": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Name to use as the SNI host when connecting via TLS.",
+      "DefaultFunc": "ENV(VAULT_TLS_SERVER_NAME)"
+    },
     "token": {
       "Type": "String",
       "Required": true,
@@ -227,6 +233,16 @@
         "Optional": true,
         "Description": "Use anonymous bind to discover the bind DN of a user."
       },
+      "formatter": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Text to insert the password into, ex. \"customPrefix{{PASSWORD}}customSuffix\".",
+        "Computed": true,
+        "ConflictsWith": [
+          "password_policy"
+        ],
+        "Deprecated": "Formatter is deprecated and password_policy should be used with Vault \u003e= 1.5."
+      },
       "groupattr": {
         "Type": "String",
         "Optional": true,
@@ -253,6 +269,13 @@
         "Description": "The number of seconds after a Vault rotation where, if Active Directory shows a later rotation, it should be considered out-of-band.",
         "Computed": true
       },
+      "length": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The desired length of passwords that Vault generates.",
+        "Computed": true,
+        "Deprecated": "Length is deprecated and password_policy should be used with Vault \u003e= 1.5."
+      },
       "local": {
         "Type": "Bool",
         "Optional": true,
@@ -269,6 +292,11 @@
         "Optional": true,
         "Description": "In seconds, the maximum password time-to-live.",
         "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "password_policy": {
         "Type": "String",
@@ -359,6 +387,11 @@
         "Required": true,
         "Description": "The name of the set of service accounts."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "service_account_names": {
         "Type": "List",
         "Required": true,
@@ -386,6 +419,11 @@
         "Type": "String",
         "Description": "Last time Vault rotated this service account's password.",
         "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "password_last_set": {
         "Type": "String",
@@ -422,6 +460,11 @@
           "Type": "string",
           "Value": "alicloud"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role": {
         "Type": "String",
@@ -528,6 +571,11 @@
           "ElementsType": "String"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "policies": {
         "Type": "List",
         "Description": "Policies set on the token.",
@@ -572,6 +620,11 @@
           "Type": "bool",
           "Value": "true"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role_id": {
         "Type": "String",
@@ -694,6 +747,11 @@
         "Optional": true,
         "Description": "JSON-encoded secret data to write."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "role_name": {
         "Type": "String",
         "Required": true,
@@ -704,6 +762,11 @@
         "Optional": true,
         "Description": "The SecretID to be managed. If not specified, Vault auto-generates one.",
         "Computed": true
+      },
+      "with_wrapped_accessor": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Use the wrapped secret-id accessor as the id of this resource. If false, a fresh secret-id will be regenerated whenever the wrapping token is expired or invalidated through unwrapping."
       },
       "wrapping_accessor": {
         "Type": "String",
@@ -731,6 +794,11 @@
         "Type": "Bool",
         "Optional": true,
         "Description": "Specifies if the audit device is a local only. Local audit devices are not replicated nor (if a secondary) removed by replication."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "options": {
         "Type": "Map",
@@ -769,6 +837,11 @@
         "Type": "Bool",
         "Optional": true,
         "Description": "Specifies if the auth method is local only"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "path": {
         "Type": "String",
@@ -874,6 +947,11 @@
         "Required": true,
         "Description": "Name of the certificate to configure."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "type": {
         "Type": "String",
         "Optional": true,
@@ -914,6 +992,11 @@
         "Optional": true,
         "Description": "The value to require in the X-Vault-AWS-IAM-Server-ID header as part of GetCallerIdentity requests that are used in the iam auth method."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "secret_key": {
         "Type": "String",
         "Optional": true,
@@ -944,6 +1027,11 @@
         "Type": "Bool",
         "Optional": true,
         "Description": "If true, disables the periodic tidying of the identiy whitelist entries."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "safety_buffer": {
         "Type": "Int",
@@ -1015,6 +1103,11 @@
         "Elem": {
           "Value": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "nonce": {
         "Type": "String",
@@ -1191,6 +1284,11 @@
         "Optional": true,
         "Description": "The type of inferencing Vault should do."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "resolve_aws_unique_ids": {
         "Type": "Bool",
         "Optional": true,
@@ -1204,6 +1302,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the role."
+      },
+      "role_id": {
+        "Type": "String",
+        "Description": "The Vault generated role ID.",
+        "Computed": true
       },
       "role_tag": {
         "Type": "String",
@@ -1300,6 +1403,11 @@
         "Optional": true,
         "Description": "The maximum allowed lifetime of tokens issued using this role."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "policies": {
         "Type": "Set",
         "Optional": true,
@@ -1339,6 +1447,11 @@
           "Value": "false"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "safety_buffer": {
         "Type": "Int",
         "Optional": true,
@@ -1363,6 +1476,11 @@
           "Type": "string",
           "Value": "aws"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "sts_role": {
         "Type": "String",
@@ -1397,6 +1515,11 @@
         "Optional": true,
         "Description": "Maximum possible lease duration for secrets in seconds",
         "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "path": {
         "Type": "String",
@@ -1468,6 +1591,16 @@
         "Required": true,
         "Description": "Unique name for the role."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "permissions_boundary_arn": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ARN of the AWS Permissions Boundary to attach to IAM users created in the role. Valid only when credential_type is iam_user. If not specified, then no permissions boundary policy will be attached."
+      },
       "policy_arns": {
         "Type": "Set",
         "Optional": true,
@@ -1492,6 +1625,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "user_path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The path for the user name. Valid only when credential_type is iam_user. Default is /"
       }
     },
     "vault_azure_auth_backend_config": {
@@ -1518,6 +1656,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "The Azure cloud environment. Valid values: AzurePublicCloud, AzureUSGovernmentCloud, AzureChinaCloud, AzureGermanCloud."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "resource": {
         "Type": "String",
@@ -1599,6 +1742,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role": {
         "Type": "String",
@@ -1690,6 +1838,11 @@
           "Value": "AzurePublicCloud"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Optional": true,
@@ -1708,6 +1861,12 @@
         "Type": "String",
         "Required": true,
         "Description": "The tenant id for the Azure Active Directory organization."
+      },
+      "use_microsoft_graph_api": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Use the Microsoft Graph API. Should be set to true on vault-1.10+",
+        "Computed": true
       }
     },
     "vault_azure_secret_backend_role": {
@@ -1777,6 +1936,11 @@
         "Optional": true,
         "Description": "Human-friendly description of the mount for the backend."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "role": {
         "Type": "String",
         "Required": true,
@@ -1833,6 +1997,22 @@
         "Type": "Set",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "allowed_organizational_units"
+        ],
+        "Deprecated": "Use allowed_organizational_units",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "allowed_organizational_units": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "allowed_organization_units"
+        ],
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -1869,6 +2049,11 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "required_extensions": {
         "Type": "Set",
@@ -1946,6 +2131,15 @@
         "Required": true,
         "Description": "Specifies the address of the Consul instance, provided as \"host:port\" like \"127.0.0.1:8500\"."
       },
+      "bootstrap": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Denotes a backend resource that is used to bootstrap the Consul ACL system. Only one resource may be used to bootstrap.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "ca_cert": {
         "Type": "String",
         "Optional": true,
@@ -2002,6 +2196,11 @@
           "Value": "0"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Optional": true,
@@ -2022,8 +2221,8 @@
       },
       "token": {
         "Type": "String",
-        "Required": true,
-        "Description": "Specifies the Consul ACL token to use. This must be a management type token."
+        "Optional": true,
+        "Description": "Specifies the Consul token to use when managing or issuing new tokens."
       }
     },
     "vault_consul_secret_backend_role": {
@@ -2031,6 +2230,35 @@
         "Type": "String",
         "Optional": true,
         "Description": "The path of the Consul Secret Backend the role belongs to."
+      },
+      "consul_namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Consul namespace that the token will be created in. Applicable for Vault 1.10+ and Consul 1.7+",
+        "Computed": true
+      },
+      "consul_policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "List of Consul policies to associate with this role",
+        "ConflictsWith": [
+          "policies"
+        ],
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "consul_roles": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of Consul roles to attach to the token. Applicable for Vault 1.10+ with Consul 1.5+",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "local": {
         "Type": "Bool",
@@ -2055,10 +2283,44 @@
         "Required": true,
         "Description": "The name of an existing role against which to create this Consul credential"
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "node_identities": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of Consul node identities to attach to\n\t\t\t\tthe token. Applicable for Vault 1.11+ with Consul 1.8+",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Consul admin partition that the token will be created in. Applicable for Vault 1.10+ and Consul 1.11+",
+        "Computed": true
+      },
       "policies": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "List of Consul policies to associate with this role",
+        "ConflictsWith": [
+          "consul_policies"
+        ],
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "service_identities": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of Consul service identities to attach to\n\t\t\t\tthe token. Applicable for Vault 1.11+ with Consul 1.5+",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -2069,6 +2331,7 @@
         "Type": "String",
         "Optional": true,
         "Description": "Specifies the type of token to create when using this role. Valid values are \"client\" or \"management\".",
+        "Deprecated": "Consul 1.11 and later removed the legacy ACL system which supported this field.",
         "Default": {
           "Type": "string",
           "Value": "client"
@@ -2320,10 +2583,44 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "ca_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a PEM-encoded CA cert file to use to verify the Elasticsearch server's identity"
+            },
+            "ca_path": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a directory of PEM-encoded CA cert files to use to verify the Elasticsearch server's identity"
+            },
+            "client_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the certificate for the Elasticsearch client to present for communication"
+            },
+            "client_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the key for the Elasticsearch client to use for communication"
+            },
+            "insecure": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to disable certificate verification",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "password": {
               "Type": "String",
               "Required": true,
               "Description": "The password to be used in the connection URL"
+            },
+            "tls_server_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "This, if set, is used to set the SNI host when connecting via TLS"
             },
             "url": {
               "Type": "String",
@@ -2334,6 +2631,11 @@
               "Type": "String",
               "Required": true,
               "Description": "The username to be used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
             }
           }
         }
@@ -2370,6 +2672,11 @@
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
             },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
             "max_connection_lifetime": {
               "Type": "Int",
               "Optional": true,
@@ -2388,6 +2695,16 @@
                 "Type": "int",
                 "Value": "2"
               }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             }
           }
         }
@@ -2539,6 +2856,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2629,6 +2956,11 @@
               "Optional": true,
               "Description": "Set to true when the target is a Contained Database, e.g. AzureSQL."
             },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
             "max_connection_lifetime": {
               "Type": "Int",
               "Optional": true,
@@ -2647,6 +2979,16 @@
                 "Type": "int",
                 "Value": "2"
               }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -2707,6 +3049,11 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
             "tls_ca": {
               "Type": "String",
               "Optional": true,
@@ -2716,6 +3063,11 @@
               "Type": "String",
               "Optional": true,
               "Description": "x509 certificate for connecting to the database. This must be a PEM encoded version of the private key and the certificate combined."
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -2776,6 +3128,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2834,6 +3196,16 @@
                 "Type": "int",
                 "Value": "2"
               }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -2894,6 +3266,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2906,6 +3288,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the database connection."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "oracle": {
         "Type": "List",
@@ -2958,6 +3345,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2965,6 +3362,12 @@
             }
           }
         }
+      },
+      "plugin_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+        "Computed": true
       },
       "postgresql": {
         "Type": "List",
@@ -2998,6 +3401,11 @@
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
             },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
             "max_connection_lifetime": {
               "Type": "Int",
               "Optional": true,
@@ -3016,6 +3424,16 @@
                 "Type": "int",
                 "Value": "2"
               }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -3056,6 +3474,11 @@
               "Type": "String",
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
             },
             "max_connection_lifetime": {
               "Type": "Int",
@@ -3219,6 +3642,11 @@
         "Required": true,
         "Description": "Unique name for the role."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "renew_statements": {
         "Type": "List",
         "Optional": true,
@@ -3266,6 +3694,11 @@
         "Required": true,
         "Description": "Unique name for the static role."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "rotation_period": {
         "Type": "Int",
         "Required": true,
@@ -3287,6 +3720,1726 @@
         "Description": "The database username that this role corresponds to."
       }
     },
+    "vault_database_secrets_mount": {
+      "accessor": {
+        "Type": "String",
+        "Description": "Accessor of the mount",
+        "Computed": true
+      },
+      "audit_non_hmac_request_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the request data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "audit_non_hmac_response_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the response data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "cassandra": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the cassandra-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connect_timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The number of seconds to use as a connection timeout.",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "hosts": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Cassandra hosts to connect to.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The password to use when authenticating with Cassandra."
+            },
+            "pem_bundle": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Concatenated PEM blocks containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "pem_json": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies JSON containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The transport port to use to connect to Cassandra.",
+              "Default": {
+                "Type": "int",
+                "Value": "9042"
+              }
+            },
+            "protocol_version": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The CQL protocol version to use.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to use TLS when connecting to Cassandra.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The username to use when authenticating with Cassandra."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "couchbase": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the couchbase-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "base64_pem": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Required if `tls` is `true`. Specifies the certificate authority of the Couchbase server, as a PEM certificate that has been base64 encoded."
+            },
+            "bucket_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Required for Couchbase versions prior to 6.5.0. This is only used to verify vault's connection to the server."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "hosts": {
+              "Type": "List",
+              "Required": true,
+              "Description": "A set of Couchbase URIs to connect to. Must use `couchbases://` scheme if `tls` is `true`.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": " Specifies whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the password corresponding to the given username."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies whether to use TLS when connecting to Couchbase.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the username for Vault to use."
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default lease duration for tokens and secrets in seconds",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount"
+      },
+      "elasticsearch": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the elasticsearch-database-plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "ca_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a PEM-encoded CA cert file to use to verify the Elasticsearch server's identity"
+            },
+            "ca_path": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a directory of PEM-encoded CA cert files to use to verify the Elasticsearch server's identity"
+            },
+            "client_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the certificate for the Elasticsearch client to present for communication"
+            },
+            "client_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the key for the Elasticsearch client to use for communication"
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "insecure": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to disable certificate verification",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The password to be used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls_server_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "This, if set, is used to set the SNI host when connecting via TLS"
+            },
+            "url": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The URL for Elasticsearch's API"
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The username to be used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "engine_count": {
+        "Type": "Int",
+        "Description": "Total number of database secret engines configured under the mount.",
+        "Computed": true
+      },
+      "external_entropy_access": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable the secrets engine to access Vault's external entropy source",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "hana": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the hana-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "influxdb": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the influxdb-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connect_timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The number of seconds to use as a connection timeout.",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "host": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Influxdb host to connect to."
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the password corresponding to the given username."
+            },
+            "pem_bundle": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Concatenated PEM blocks containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "pem_json": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies JSON containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The transport port to use to connect to Influxdb.",
+              "Default": {
+                "Type": "int",
+                "Value": "8086"
+              }
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to use TLS when connecting to Influxdb.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the username to use for superuser access."
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "local": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Local mount flag that can be explicitly set to true to enforce local mount in HA environment"
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum possible lease duration for tokens and secrets in seconds",
+        "Computed": true
+      },
+      "mongodb": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mongodb-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mongodbatlas": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mongodbatlas-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "private_key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Private Programmatic API Key used to connect with MongoDB Atlas API."
+            },
+            "project_id": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Project ID the Database User should be created within."
+            },
+            "public_key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Public Programmatic API Key used to authenticate with the MongoDB Atlas API."
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mssql": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mssql-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "contained_db": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Set to true when the target is a Contained Database, e.g. AzureSQL."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls_ca": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "x509 CA file for validating the certificate presented by the MySQL server. Must be PEM encoded."
+            },
+            "tls_certificate_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "x509 certificate for connecting to the database. This must be a PEM encoded version of the private key and the certificate combined."
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql_aurora": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-aurora-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql_legacy": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-legacy-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql_rds": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-rds-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "options": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Specifies mount type specific options that are passed to the backend"
+      },
+      "oracle": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the oracle-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Where the secret backend will be mounted"
+      },
+      "postgresql": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the postgresql-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "redshift": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the redshift-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "seal_wrap": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable seal wrapping for the mount, causing values stored by the mount to be wrapped by the seal's encryption capability",
+        "Computed": true
+      },
+      "snowflake": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the snowflake-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    },
     "vault_egp_policy": {
       "enforcement_level": {
         "Type": "String",
@@ -3297,6 +5450,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the policy"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "paths": {
         "Type": "List",
@@ -3329,6 +5487,39 @@
         "Type": "String",
         "Optional": true
       },
+      "custom_endpoint": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies overrides to service endpoints used when making API requests to GCP.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "api": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Replaces the service endpoint used in API requests to https://www.googleapis.com."
+            },
+            "compute": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Replaces the service endpoint used in API requests to `https://compute.googleapis.com`."
+            },
+            "crm": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Replaces the service endpoint used in API requests to `https://cloudresourcemanager.googleapis.com`."
+            },
+            "iam": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Replaces the service endpoint used in API requests to `https://iam.googleapis.com`."
+            }
+          }
+        }
+      },
       "description": {
         "Type": "String",
         "Optional": true
@@ -3337,6 +5528,11 @@
         "Type": "Bool",
         "Optional": true,
         "Description": "Specifies if the auth method is local only"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "path": {
         "Type": "String",
@@ -3440,6 +5636,11 @@
         "Optional": true,
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "role": {
         "Type": "String",
         "Required": true
@@ -3540,6 +5741,11 @@
           "Type": "string"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Optional": true,
@@ -3581,6 +5787,11 @@
             }
           }
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "project": {
         "Type": "String",
@@ -3645,6 +5856,11 @@
             }
           }
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "secret_type": {
         "Type": "String",
@@ -3711,6 +5927,11 @@
           "Value": "false"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Required": true,
@@ -3771,6 +5992,11 @@
           "Value": "false"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Required": true,
@@ -3796,10 +6022,21 @@
         "Optional": true,
         "Description": "Specifies the description of the mount. This overrides the current stored value, if any."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "organization": {
         "Type": "String",
         "Required": true,
         "Description": "The organization users must be part of."
+      },
+      "organization_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The ID of the organization users must be part of. Vault will attempt to fetch and set this value if it is not provided (vault-1.10+)",
+        "Computed": true
       },
       "path": {
         "Type": "String",
@@ -3952,6 +6189,11 @@
           "Value": "github"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "policies": {
         "Type": "List",
         "Optional": true,
@@ -3977,6 +6219,11 @@
           "Type": "string",
           "Value": "github"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "policies": {
         "Type": "List",
@@ -4025,6 +6272,11 @@
         "Description": "Name of the entity.",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "policies": {
         "Type": "Set",
         "Optional": true,
@@ -4061,6 +6313,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the entity alias."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       }
     },
     "vault_identity_entity_policies": {
@@ -4082,6 +6339,11 @@
           "Type": "bool",
           "Value": "true"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "policies": {
         "Type": "Set",
@@ -4149,6 +6411,11 @@
         "Description": "Name of the group.",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "policies": {
         "Type": "Set",
         "Optional": true,
@@ -4184,13 +6451,18 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the group alias."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       }
     },
     "vault_identity_group_member_entity_ids": {
       "exclusive": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Should the resource manage member entity ids exclusively? Beware of race conditions when disabling exclusive management",
+        "Description": "Should the resource manage member entity ids \nexclusively? Beware of race conditions when disabling exclusive management",
         "Default": {
           "Type": "bool",
           "Value": "true"
@@ -4204,7 +6476,8 @@
       "group_name": {
         "Type": "String",
         "Description": "Name of the group.",
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "The value for group_name may not always be accurate, \nuse \"data.vault_identity_group.*.group_name\", \"vault_identity_group.*.group_name\" instead"
       },
       "member_entity_ids": {
         "Type": "Set",
@@ -4215,6 +6488,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       }
     },
     "vault_identity_group_policies": {
@@ -4237,6 +6515,11 @@
         "Description": "Name of the group.",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "policies": {
         "Type": "Set",
         "Required": true,
@@ -4254,6 +6537,109 @@
         "Optional": true,
         "Description": "Issuer URL to be used in the iss claim of the token. If not set, Vault's api_addr will be used. The issuer is a case sensitive URL using the https scheme that contains scheme, host, and optionally, port number and path components, but no query or fragment components.",
         "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      }
+    },
+    "vault_identity_oidc_assignment": {
+      "entity_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of Vault entity IDs.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "group_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of Vault group IDs.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the assignment."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      }
+    },
+    "vault_identity_oidc_client": {
+      "access_token_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The time-to-live for access tokens obtained by the client.",
+        "Computed": true
+      },
+      "assignments": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of assignment resources associated with the client.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "client_id": {
+        "Type": "String",
+        "Description": "The Client ID from Vault.",
+        "Computed": true
+      },
+      "client_secret": {
+        "Type": "String",
+        "Description": "The Client Secret from Vault.",
+        "Computed": true
+      },
+      "client_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The client type based on its ability to maintain confidentiality of credentials.Defaults to 'confidential'.",
+        "Computed": true
+      },
+      "id_token_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The time-to-live for ID tokens obtained by the client. The value should be less than the verification_ttl on the key.",
+        "Computed": true
+      },
+      "key": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A reference to a named key resource in Vault. This cannot be modified after creation.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the client."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "redirect_uris": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Redirection URI values used by the client. One of these values must exactly match the redirect_uri parameter value used in each authentication request.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "vault_identity_oidc_key": {
@@ -4281,6 +6667,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the key."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "rotation_period": {
         "Type": "Int",
@@ -4311,6 +6702,62 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the key."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      }
+    },
+    "vault_identity_oidc_provider": {
+      "allowed_client_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The client IDs that are permitted to use the provider. If empty, no clients are allowed. If \"*\", all clients are allowed.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "https_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Set to true if the issuer endpoint uses HTTPS.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "issuer": {
+        "Type": "String",
+        "Description": "Specifies what will be used as the 'scheme://host:port' component for the 'iss' claim of ID tokens.This value is computed using the issuer_host and https_enabled fields.",
+        "Computed": true
+      },
+      "issuer_host": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The host for the issuer. Can be either host or host:port."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the provider."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "scopes_supported": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The scopes available for requesting on the provider.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "vault_identity_oidc_role": {
@@ -4330,6 +6777,11 @@
         "Required": true,
         "Description": "Name of the role."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "template": {
         "Type": "String",
         "Optional": true,
@@ -4343,6 +6795,28 @@
           "Type": "int",
           "Value": "86400"
         }
+      }
+    },
+    "vault_identity_oidc_scope": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The scope's description."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the scope. The openid scope name is reserved."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The template string for the scope. This may be provided as escaped JSON or base64 encoded JSON."
       }
     },
     "vault_jwt_auth_backend": {
@@ -4412,6 +6886,11 @@
           "Type": "bool",
           "Value": "false"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "namespace_in_state": {
         "Type": "Bool",
@@ -4645,6 +7124,16 @@
         "Optional": true,
         "Description": "The claim to use to uniquely identify the set of groups to which the user belongs; this will be used as the names for the Identity group aliases created due to a successful login. The claim value must be a list of strings."
       },
+      "max_age": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies the allowable elapsed time in seconds since the last time the user was actively authenticated."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "not_before_leeway": {
         "Type": "Int",
         "Optional": true,
@@ -4739,6 +7228,15 @@
         "Required": true,
         "Description": "The claim to use to uniquely identify the user; this will be used as the name for the Identity entity alias created due to a successful login."
       },
+      "user_claim_json_pointer": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Specifies if the user_claim value uses JSON pointer syntax for referencing claims. By default, the user_claim value will not use JSON pointer.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "verbose_oidc_logging": {
         "Type": "Bool",
         "Optional": true,
@@ -4747,6 +7245,239 @@
           "Type": "bool",
           "Value": "false"
         }
+      }
+    },
+    "vault_kmip_secret_backend": {
+      "default_tls_client_key_bits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate key bits, valid values depend on key type",
+        "Computed": true
+      },
+      "default_tls_client_key_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Client certificate key type, rsa or ec",
+        "Computed": true
+      },
+      "default_tls_client_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate TTL in seconds",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount for the backend"
+      },
+      "listen_addrs": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Addresses the KMIP server should listen on (host:port)",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KMIP secret backend will be mounted"
+      },
+      "server_hostnames": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Hostnames to include in the server's TLS certificate as SAN DNS names. The first will be used as the common name (CN)",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "server_ips": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "IPs to include in the server's TLS certificate as SAN IP addresses",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tls_ca_key_bits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "CA key bits, valid values depend on key type",
+        "Computed": true
+      },
+      "tls_ca_key_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "CA key type, rsa or ec",
+        "Computed": true
+      },
+      "tls_min_version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Minimum TLS version to accept",
+        "Computed": true
+      }
+    },
+    "vault_kmip_secret_role": {
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "operation_activate": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Activate operation",
+        "Computed": true
+      },
+      "operation_add_attribute": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Add Attribute operation",
+        "Computed": true
+      },
+      "operation_all": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant all permissions to this role. May not be specified with any other operation_* params",
+        "Computed": true
+      },
+      "operation_create": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Create operation",
+        "Computed": true
+      },
+      "operation_destroy": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Destroy operation",
+        "Computed": true
+      },
+      "operation_discover_versions": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Discover Version operation",
+        "Computed": true
+      },
+      "operation_get": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Get operation",
+        "Computed": true
+      },
+      "operation_get_attribute_list": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Get Attribute List operation",
+        "Computed": true
+      },
+      "operation_get_attributes": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Get Attributes operation",
+        "Computed": true
+      },
+      "operation_locate": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Locate operation",
+        "Computed": true
+      },
+      "operation_none": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Remove all permissions from this role. May not be specified with any other operation_* params",
+        "Computed": true
+      },
+      "operation_register": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Register operation",
+        "Computed": true
+      },
+      "operation_rekey": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Rekey operation",
+        "Computed": true
+      },
+      "operation_revoke": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Revoke operation",
+        "Computed": true
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KMIP backend is mounted"
+      },
+      "role": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the role"
+      },
+      "scope": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the scope"
+      },
+      "tls_client_key_bits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate key bits, valid values depend on key type"
+      },
+      "tls_client_key_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Client certificate key type, rsa or ec"
+      },
+      "tls_client_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate TTL in seconds"
+      }
+    },
+    "vault_kmip_secret_scope": {
+      "force": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Force deletion even if there are managed objects in the scope",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KMIP backend is mounted"
+      },
+      "scope": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the scope"
       }
     },
     "vault_kubernetes_auth_backend_config": {
@@ -4780,14 +7511,17 @@
         "Type": "String",
         "Optional": true,
         "Description": "PEM encoded CA cert for use by the TLS client used to talk with the Kubernetes API.",
-        "Default": {
-          "Type": "string"
-        }
+        "Computed": true
       },
       "kubernetes_host": {
         "Type": "String",
         "Required": true,
         "Description": "Host must be a host string, a host:port pair, or a URL to the base of the Kubernetes API server."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "pem_keys": {
         "Type": "List",
@@ -4809,6 +7543,12 @@
       }
     },
     "vault_kubernetes_auth_backend_role": {
+      "alias_name_source": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Configures how identity aliases are generated. Valid choices are: serviceaccount_uid, serviceaccount_name",
+        "Computed": true
+      },
       "audience": {
         "Type": "String",
         "Optional": true,
@@ -4845,6 +7585,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role_name": {
         "Type": "String",
@@ -4911,6 +7656,321 @@
         }
       }
     },
+    "vault_kubernetes_secret_backend": {
+      "accessor": {
+        "Type": "String",
+        "Description": "Accessor of the mount",
+        "Computed": true
+      },
+      "audit_non_hmac_request_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the request data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "audit_non_hmac_response_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the response data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default lease duration for tokens and secrets in seconds",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount"
+      },
+      "disable_local_ca_jwt": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Disable defaulting to the local CA certificate and service account JWT when running in a Kubernetes pod.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "external_entropy_access": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable the secrets engine to access Vault's external entropy source",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "kubernetes_ca_cert": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A PEM-encoded CA certificate used by the secret engine to verify the Kubernetes API server certificate. Defaults to the local pod’s CA if found, or otherwise the host's root CA set."
+      },
+      "kubernetes_host": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Kubernetes API URL to connect to."
+      },
+      "local": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Local mount flag that can be explicitly set to true to enforce local mount in HA environment"
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum possible lease duration for tokens and secrets in seconds",
+        "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "options": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Specifies mount type specific options that are passed to the backend"
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Where the secret backend will be mounted"
+      },
+      "seal_wrap": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable seal wrapping for the mount, causing values stored by the mount to be wrapped by the seal's encryption capability",
+        "Computed": true
+      },
+      "service_account_jwt": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The JSON web token of the service account used by the secrets engine to manage Kubernetes credentials. Defaults to the local pod’s JWT if found."
+      }
+    },
+    "vault_kubernetes_secret_backend_role": {
+      "allowed_kubernetes_namespaces": {
+        "Type": "List",
+        "Required": true,
+        "Description": "The list of Kubernetes namespaces this role can generate credentials for. If set to '*' all namespaces are allowed.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "backend": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The mount path for the Kubernetes secrets engine."
+      },
+      "extra_annotations": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Additional annotations to apply to all generated Kubernetes objects.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "extra_labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Additional labels to apply to all generated Kubernetes objects.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "generated_role_rules": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Role or ClusterRole rules to use when generating a role. Accepts either JSON or YAML formatted rules. Mutually exclusive with 'service_account_name' and 'kubernetes_role_name'. If set, the entire chain of Kubernetes objects will be generated when credentials are requested."
+      },
+      "kubernetes_role_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The pre-existing Role or ClusterRole to bind a generated service account to. Mutually exclusive with 'service_account_name' and 'generated_role_rules'. If set, Kubernetes token, service account, and role binding objects will be created when credentials are requested."
+      },
+      "kubernetes_role_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies whether the Kubernetes role is a Role or ClusterRole.",
+        "Default": {
+          "Type": "string",
+          "Value": "Role"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the role."
+      },
+      "name_template": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name template to use when generating service accounts, roles and role bindings. If unset, a default template is used."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "service_account_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The pre-existing service account to generate tokens for. Mutually exclusive with 'kubernetes_role_name' and 'generated_role_rules'. If set, only a Kubernetes token will be created when credentials are requested."
+      },
+      "token_default_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The default TTL for generated Kubernetes tokens in seconds.",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "token_max_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The maximum TTL for generated Kubernetes tokens in seconds.",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      }
+    },
+    "vault_kv_secret": {
+      "data": {
+        "Type": "Map",
+        "Description": "Map of strings read from Vault.",
+        "Computed": true
+      },
+      "data_json": {
+        "Type": "String",
+        "Required": true,
+        "Description": "JSON-encoded secret data to write."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Full path of the KV-V1 secret."
+      }
+    },
+    "vault_kv_secret_backend_v2": {
+      "cas_required": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, all keys will require the cas parameter to be set on all write requests.",
+        "Computed": true
+      },
+      "delete_version_after": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "If set, specifies the length of time before a version is deleted"
+      },
+      "max_versions": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The number of versions to keep per key.",
+        "Computed": true
+      },
+      "mount": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KV-V2 engine is mounted."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      }
+    },
+    "vault_kv_secret_v2": {
+      "cas": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "This flag is required if cas_required is set to true on either the secret or the engine's config. In order for a write to be successful, cas must be set to the current version of the secret."
+      },
+      "data": {
+        "Type": "Map",
+        "Description": "Map of strings read from Vault.",
+        "Computed": true
+      },
+      "data_json": {
+        "Type": "String",
+        "Required": true,
+        "Description": "JSON-encoded secret data to write."
+      },
+      "delete_all_versions": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If set to true, permanently deletes all versions for the specified key.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "disable_read": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If set to true, disables reading secret from Vault; note: drift won't be detected.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "metadata": {
+        "Type": "Map",
+        "Description": "Metadata associated with this secret read from Vault.",
+        "Computed": true
+      },
+      "mount": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KV-V2 engine is mounted."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Full name of the secret. For a nested secret, the name is the nested path excluding the mount and data prefix. For example, for a secret at 'kvv2/data/foo/bar/baz', the name is 'foo/bar/baz'"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "options": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "An object that holds option settings."
+      },
+      "path": {
+        "Type": "String",
+        "Description": "Full path where the KV-V2 secret will be written.",
+        "Computed": true
+      }
+    },
     "vault_ldap_auth_backend": {
       "accessor": {
         "Type": "String",
@@ -4924,6 +7984,11 @@
       },
       "bindpass": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "case_sensitive_names": {
+        "Type": "Bool",
         "Optional": true,
         "Computed": true
       },
@@ -4985,6 +8050,11 @@
           "Type": "bool",
           "Value": "false"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "path": {
         "Type": "String",
@@ -5091,6 +8161,17 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "userfilter": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "username_as_alias": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Force the auth method to use the username passed by the user as the alias name.",
+        "Computed": true
       }
     },
     "vault_ldap_auth_backend_group": {
@@ -5105,6 +8186,11 @@
       "groupname": {
         "Type": "String",
         "Required": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "policies": {
         "Type": "Set",
@@ -5135,6 +8221,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "policies": {
         "Type": "Set",
@@ -5172,6 +8263,11 @@
         "Required": true,
         "Description": "Name of the MFA method."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "push_info": {
         "Type": "String",
         "Optional": true,
@@ -5186,6 +8282,207 @@
         "Type": "String",
         "Optional": true,
         "Description": "A format string for mapping Identity names to MFA method names. Values to substitute should be placed in `{{}}`."
+      }
+    },
+    "vault_mfa_okta": {
+      "api_token": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Okta API key."
+      },
+      "base_url": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "If set, will be used as the base domain for API requests.",
+        "Default": {
+          "Type": "string",
+          "Value": "okta.com"
+        }
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID computed by Vault.",
+        "Computed": true
+      },
+      "mount_accessor": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The mount to tie this method to for use in automatic mappings. The mapping will use the Name field of Aliases associated with this mount as the username in the mapping."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the MFA method."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "org_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the organization to be used in the Okta API."
+      },
+      "primary_email": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If set to true, the username will only match the primary email for the account.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "username_format": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A format string for mapping Identity names to MFA method names. Values to substitute should be placed in `{{}}`."
+      }
+    },
+    "vault_mfa_pingid": {
+      "admin_url": {
+        "Type": "String",
+        "Description": "Admin URL computed by Vault.",
+        "Computed": true
+      },
+      "authenticator_url": {
+        "Type": "String",
+        "Description": "Authenticator URL computed by Vault.",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID computed by Vault.",
+        "Computed": true
+      },
+      "idp_url": {
+        "Type": "String",
+        "Description": "IDP URL computed by Vault.",
+        "Computed": true
+      },
+      "mount_accessor": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The mount to tie this method to for use in automatic mappings. The mapping will use the Name field of Aliases associated with this mount as the username in the mapping."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the MFA method."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "namespace_id": {
+        "Type": "String",
+        "Description": "Namespace ID computed by Vault.",
+        "Computed": true
+      },
+      "org_alias": {
+        "Type": "String",
+        "Description": "Org Alias computed by Vault.",
+        "Computed": true
+      },
+      "settings_file_base64": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A base64-encoded third-party settings file retrieved from PingID's configuration page."
+      },
+      "type": {
+        "Type": "String",
+        "Description": "Type of configuration computed by Vault.",
+        "Computed": true
+      },
+      "use_signature": {
+        "Type": "Bool",
+        "Description": "If set, enables use of PingID signature. Computed by Vault",
+        "Computed": true
+      },
+      "username_format": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A format string for mapping Identity names to MFA method names. Values to substitute should be placed in `{{}}`."
+      }
+    },
+    "vault_mfa_totp": {
+      "algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the hashing algorithm used to generate the TOTP code. Options include 'SHA1', 'SHA256' and 'SHA512'.",
+        "Default": {
+          "Type": "string",
+          "Value": "SHA1"
+        }
+      },
+      "digits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The number of digits in the generated TOTP token. This value can either be 6 or 8.",
+        "Default": {
+          "Type": "int",
+          "Value": "6"
+        }
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID computed by Vault.",
+        "Computed": true
+      },
+      "issuer": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the key's issuing organization."
+      },
+      "key_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies the size in bytes of the generated key.",
+        "Default": {
+          "Type": "int",
+          "Value": "20"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the MFA method."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "period": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The length of time used to generate a counter for the TOTP token calculation.",
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
+      },
+      "qr_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The pixel size of the generated square QR code.",
+        "Default": {
+          "Type": "int",
+          "Value": "200"
+        }
+      },
+      "skew": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The number of delay periods that are allowed when validating a TOTP token. This value can either be 0 or 1.",
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       }
     },
     "vault_mount": {
@@ -5247,6 +8544,11 @@
         "Description": "Maximum possible lease duration for tokens and secrets in seconds",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "options": {
         "Type": "Map",
         "Optional": true,
@@ -5270,15 +8572,25 @@
       }
     },
     "vault_namespace": {
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "namespace_id": {
         "Type": "String",
-        "Description": "ID of the namepsace.",
+        "Description": "Namespace ID.",
         "Computed": true
       },
       "path": {
         "Type": "String",
         "Required": true,
-        "Description": "Path of the namespace."
+        "Description": "Namespace path."
+      },
+      "path_fq": {
+        "Type": "String",
+        "Description": "The fully qualified namespace path.",
+        "Computed": true
       }
     },
     "vault_nomad_secret_backend": {
@@ -5345,6 +8657,11 @@
         "Description": "Maximum possible lease duration for secrets in seconds.",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "token": {
         "Type": "String",
         "Optional": true,
@@ -5368,6 +8685,11 @@
         "Optional": true,
         "Description": "Specifies if the token should be global.",
         "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "policies": {
         "Type": "List",
@@ -5448,6 +8770,11 @@
           "Value": "0"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "organization": {
         "Type": "String",
         "Required": true,
@@ -5519,6 +8846,11 @@
         "Required": true,
         "Description": "Name of the Okta group"
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Required": true,
@@ -5546,6 +8878,11 @@
           "ElementsType": "String"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Required": true,
@@ -5572,6 +8909,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the password policy."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "policy": {
         "Type": "String",
@@ -5667,6 +9009,11 @@
         "Required": true,
         "Description": "Name of the role to create the certificate against."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "other_sans": {
         "Type": "List",
         "Optional": true,
@@ -5696,6 +9043,15 @@
         "Description": "The private key type.",
         "Computed": true
       },
+      "revoke": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Revoke the certificate upon resource destruction.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "serial_number": {
         "Type": "String",
         "Description": "The serial number.",
@@ -5722,6 +9078,11 @@
         "Type": "String",
         "Required": true,
         "Description": "The PKI secret backend the resource belongs to."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "pem_bundle": {
         "Type": "String",
@@ -5755,6 +9116,11 @@
           "ElementsType": "String"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "ocsp_servers": {
         "Type": "List",
         "Optional": true,
@@ -5781,6 +9147,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "Specifies the time until expiration."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       }
     },
     "vault_pki_secret_backend_intermediate_cert_request": {
@@ -5860,6 +9231,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "The locality."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "organization": {
         "Type": "String",
@@ -5941,6 +9317,11 @@
         "Type": "String",
         "Required": true,
         "Description": "The certificate."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       }
     },
     "vault_pki_secret_backend_role": {
@@ -6021,6 +9402,16 @@
         "Type": "List",
         "Optional": true,
         "Description": "Defines allowed custom SANs",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "allowed_serial_numbers": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Defines allowed Subject serial numbers.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -6128,7 +9519,7 @@
       "key_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "The type of generated keys.",
+        "Description": "The generated key type.",
         "Default": {
           "Type": "string",
           "Value": "rsa"
@@ -6138,6 +9529,7 @@
         "Type": "List",
         "Optional": true,
         "Description": "Specify the allowed key usage constraint on issued certificates.",
+        "Computed": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -6157,12 +9549,18 @@
       "max_ttl": {
         "Type": "String",
         "Optional": true,
-        "Description": "The maximum TTL."
+        "Description": "The maximum TTL.",
+        "Computed": true
       },
       "name": {
         "Type": "String",
         "Required": true,
         "Description": "Unique name for the role."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "no_store": {
         "Type": "Bool",
@@ -6199,10 +9597,43 @@
           "ElementsType": "String"
         }
       },
+      "policy_identifier": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Policy identifier block; can only be used with Vault 1.11+",
+        "ConflictsWith": [
+          "policy_identifiers"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cps": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional CPS URL"
+            },
+            "notice": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional notice"
+            },
+            "oid": {
+              "Type": "String",
+              "Required": true,
+              "Description": "OID"
+            }
+          }
+        }
+      },
       "policy_identifiers": {
         "Type": "List",
         "Optional": true,
-        "Description": "Specify the list of allowed policies IODs.",
+        "Description": "Specify the list of allowed policies OIDs.",
+        "ConflictsWith": [
+          "policy_identifier"
+        ],
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -6260,7 +9691,8 @@
       "ttl": {
         "Type": "String",
         "Optional": true,
-        "Description": "The TTL."
+        "Description": "The TTL.",
+        "Computed": true
       },
       "use_csr_common_name": {
         "Type": "Bool",
@@ -6299,13 +9731,13 @@
       },
       "certificate": {
         "Type": "String",
-        "Description": "The certicate.",
+        "Description": "The certificate.",
         "Computed": true
       },
       "common_name": {
         "Type": "String",
         "Required": true,
-        "Description": "CN of intermediate to create."
+        "Description": "CN of root to create."
       },
       "country": {
         "Type": "String",
@@ -6373,6 +9805,11 @@
           "Value": "-1"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "organization": {
         "Type": "String",
         "Optional": true,
@@ -6425,6 +9862,12 @@
       "serial": {
         "Type": "String",
         "Description": "The serial number.",
+        "Computed": true,
+        "Deprecated": "Use serial_number instead"
+      },
+      "serial_number": {
+        "Type": "String",
+        "Description": "The certificate's serial number, hex formatted.",
         "Computed": true
       },
       "street_address": {
@@ -6440,12 +9883,12 @@
       "type": {
         "Type": "String",
         "Required": true,
-        "Description": "Type of intermediate to create. Must be either \"exported\" or \"internal\"."
+        "Description": "Type of root to create. Must be either \"exported\" or \"internal\"."
       },
       "uri_sans": {
         "Type": "List",
         "Optional": true,
-        "Description": "List of alterative URIs.",
+        "Description": "List of alternative URIs.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -6470,13 +9913,23 @@
         "Description": "The PKI secret backend the resource belongs to."
       },
       "ca_chain": {
-        "Type": "String",
-        "Description": "The CA chain.",
-        "Computed": true
+        "Type": "List",
+        "Description": "The CA chain as a list of format specific certificates",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "certificate": {
         "Type": "String",
-        "Description": "The certicate.",
+        "Description": "The signed intermediate CA certificate.",
+        "Computed": true
+      },
+      "certificate_bundle": {
+        "Type": "String",
+        "Description": "The concatenation of the intermediate and issuing CA certificates (PEM encoded). Requires the format to be set to any of: pem, pem_bundle. The value will be empty for all other formats.",
         "Computed": true
       },
       "common_name": {
@@ -6520,7 +9973,7 @@
       },
       "issuing_ca": {
         "Type": "String",
-        "Description": "The issuing CA.",
+        "Description": "The issuing CA certificate.",
         "Computed": true
       },
       "locality": {
@@ -6536,6 +9989,11 @@
           "Type": "int",
           "Value": "-1"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "organization": {
         "Type": "String",
@@ -6577,9 +10035,24 @@
         "Optional": true,
         "Description": "The province."
       },
+      "revoke": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Revoke the certificate upon resource destruction.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "serial": {
         "Type": "String",
         "Description": "The serial number.",
+        "Computed": true,
+        "Deprecated": "Use serial_number instead"
+      },
+      "serial_number": {
+        "Type": "String",
+        "Description": "The certificate's serial number, hex formatted.",
         "Computed": true
       },
       "street_address": {
@@ -6595,7 +10068,7 @@
       "uri_sans": {
         "Type": "List",
         "Optional": true,
-        "Description": "List of alterative URIs.",
+        "Description": "List of alternative URIs.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -6710,6 +10183,11 @@
         "Required": true,
         "Description": "Name of the role to create the certificate against."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "other_sans": {
         "Type": "List",
         "Optional": true,
@@ -6722,7 +10200,13 @@
       },
       "serial": {
         "Type": "String",
-        "Description": "The serial.",
+        "Description": "The serial number.",
+        "Computed": true,
+        "Deprecated": "Use serial_number instead"
+      },
+      "serial_number": {
+        "Type": "String",
+        "Description": "The certificate's serial number, hex formatted.",
         "Computed": true
       },
       "ttl": {
@@ -6733,7 +10217,7 @@
       "uri_sans": {
         "Type": "List",
         "Optional": true,
-        "Description": "List of alterative URIs.",
+        "Description": "List of alternative URIs.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -6746,6 +10230,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Name of the policy"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "policy": {
         "Type": "String",
@@ -6764,6 +10253,11 @@
         "Required": true,
         "Description": "The name of the quota."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Optional": true,
@@ -6771,10 +10265,26 @@
       }
     },
     "vault_quota_rate_limit": {
+      "block_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "If set, when a client reaches a rate limit threshold, the client will be prohibited from any further requests until after the 'block_interval' in seconds has elapsed."
+      },
+      "interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The duration in seconds to enforce rate limiting for.",
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Required": true,
         "Description": "The name of the quota."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "path": {
         "Type": "String",
@@ -6810,10 +10320,20 @@
         "Description": "Maximum possible lease duration for secrets in seconds",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "password": {
         "Type": "String",
         "Required": true,
         "Description": "Specifies the RabbitMQ management administrator password"
+      },
+      "password_policy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a password policy to use when creating dynamic credentials. Defaults to generating an alphanumeric password if not set."
       },
       "path": {
         "Type": "String",
@@ -6828,6 +10348,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Specifies the RabbitMQ management administrator username"
+      },
+      "username_template": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Template describing how dynamic usernames are generated."
       },
       "verify_connection": {
         "Type": "Bool",
@@ -6849,6 +10374,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Unique name for the role."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "tags": {
         "Type": "String",
@@ -6980,6 +10510,11 @@
           "Type": "int",
           "Value": "3"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "server_stabilization_time": {
         "Type": "String",
@@ -7116,6 +10651,11 @@
         "Required": true,
         "Description": "Name of the snapshot agent configuration."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path_prefix": {
         "Type": "String",
         "Required": true,
@@ -7147,6 +10687,11 @@
         "Required": true,
         "Description": "Name of the policy"
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "policy": {
         "Type": "String",
         "Required": true,
@@ -7167,6 +10712,11 @@
         "Type": "Bool",
         "Optional": true,
         "Description": "Whether Vault should generate the signing key pair internally."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "private_key": {
         "Type": "String",
@@ -7239,9 +10789,48 @@
         "Type": "String",
         "Optional": true
       },
+      "allowed_user_key_config": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of allowed public key types and their relevant configuration",
+        "ConflictsWith": [
+          "allowed_user_key_lengths"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "lengths": {
+              "Type": "List",
+              "Required": true,
+              "Description": "List of allowed key lengths, vault-1.10 and above",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Int"
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Key type, choices:\nrsa, ecdsa, ec, dsa, ed25519, ssh-rsa, ssh-dss, ssh-ed25519, ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, ecdsa-sha2-nistp521"
+            }
+          }
+        }
+      },
       "allowed_user_key_lengths": {
         "Type": "Map",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "allowed_user_key_config"
+        ],
+        "Deprecated": "Set in allowed_user_key_config",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
       },
       "allowed_users": {
         "Type": "String",
@@ -7292,6 +10881,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Unique name for the role."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "ttl": {
         "Type": "String",
@@ -7350,6 +10944,11 @@
           "Value": "0"
         }
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "token": {
         "Type": "String",
         "Optional": true,
@@ -7366,6 +10965,11 @@
         "Type": "String",
         "Description": "Associated Vault lease ID, if one exists",
         "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "organization": {
         "Type": "String",
@@ -7412,6 +11016,11 @@
         "Type": "String",
         "Required": true,
         "Description": "The name of an existing role against which to create this Terraform Cloud credential"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "organization": {
         "Type": "String",
@@ -7467,6 +11076,21 @@
         "Type": "String",
         "Description": "The token lease started on.",
         "Computed": true
+      },
+      "metadata": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Metadata to be associated with the token.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "no_default_policy": {
         "Type": "Bool",
@@ -7543,10 +11167,32 @@
       }
     },
     "vault_token_auth_backend_role": {
+      "allowed_entity_aliases": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of allowed entity aliases for this role.",
+        "DefaultFunc": "UNKNOWN",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "allowed_policies": {
         "Type": "Set",
         "Optional": true,
         "Description": "List of allowed policies for given role.",
+        "DefaultFunc": "UNKNOWN",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "allowed_policies_glob": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of allowed policies with glob match for given role.",
         "DefaultFunc": "UNKNOWN",
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -7564,6 +11210,22 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "disallowed_policies_glob": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of disallowed policies with glob match for given role.",
+        "DefaultFunc": "UNKNOWN",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "orphan": {
         "Type": "Bool",
@@ -7672,6 +11334,25 @@
           "Value": "false"
         }
       },
+      "auto_rotate_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Amount of time the key should live before being automatically rotated. A value of 0 disables automatic rotation for the key.",
+        "Computed": true,
+        "ConflictsWith": [
+          "auto_rotate_period"
+        ],
+        "Deprecated": "Use auto_rotate_period instead"
+      },
+      "auto_rotate_period": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Amount of time the key should live before being automatically rotated. A value of 0 disables automatic rotation for the key.",
+        "Computed": true,
+        "ConflictsWith": [
+          "auto_rotate_interval"
+        ]
+      },
       "backend": {
         "Type": "String",
         "Required": true,
@@ -7756,6 +11437,11 @@
         "Required": true,
         "Description": "Name of the encryption key to create."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "supports_decryption": {
         "Type": "Bool",
         "Description": "Whether or not the key supports decryption, based on key type.",
@@ -7792,6 +11478,11 @@
         "Required": true,
         "Description": "The Transit secret backend the resource belongs to."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "size": {
         "Type": "Int",
         "Required": true,
@@ -7816,6 +11507,11 @@
         "Description": "Last known password for the service account.",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "role": {
         "Type": "String",
         "Required": true,
@@ -7836,6 +11532,11 @@
           "Type": "string",
           "Value": "approle"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role_id": {
         "Type": "String",
@@ -7879,6 +11580,11 @@
         "Description": "Maximum possible lease duration in seconds",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Required": true,
@@ -7920,6 +11626,11 @@
         "Type": "String",
         "Description": "Time at which the lease was read, using the clock of the system where Terraform was running",
         "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "region": {
         "Type": "String",
@@ -7977,6 +11688,11 @@
         "Description": "The client secret for credentials to query the Azure APIs.",
         "Computed": true
       },
+      "environment": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Azure environment to use during credential validation.\nDefaults to the environment configured in the Vault backend.\nSome possible values: AzurePublicCloud, AzureGovernmentCloud"
+      },
       "lease_duration": {
         "Type": "Int",
         "Description": "Lease duration in seconds relative to the time in lease_start_time.",
@@ -8003,8 +11719,13 @@
         "Description": "If 'validate_creds' is true, the number of seconds after which to give up validating credentials.",
         "Default": {
           "Type": "int",
-          "Value": "1200"
+          "Value": "300"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "num_seconds_between_tests": {
         "Type": "Int",
@@ -8012,7 +11733,7 @@
         "Description": "If 'validate_creds' is true, the number of seconds to wait between each test of generated credentials.",
         "Default": {
           "Type": "int",
-          "Value": "7"
+          "Value": "1"
         }
       },
       "num_sequential_successes": {
@@ -8028,6 +11749,16 @@
         "Type": "String",
         "Required": true,
         "Description": "Azure Secret Role to read credentials from."
+      },
+      "subscription_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The subscription ID to use during credential validation. Defaults to the subscription ID configured in the Vault backend"
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The tenant ID to use during credential validation. Defaults to the tenant ID configured in the Vault backend"
       },
       "validate_creds": {
         "Type": "Bool",
@@ -8102,6 +11833,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role_id": {
         "Type": "String",
@@ -8208,6 +11944,11 @@
         "Description": "Time at which the lease was read, using the clock of the system where Terraform was running",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "path": {
         "Type": "String",
         "Required": true,
@@ -8219,6 +11960,15 @@
         "Default": {
           "Type": "int",
           "Value": "-1"
+        }
+      },
+      "with_lease_start_time": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If set to true, stores 'lease_start_time' in the TF state.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       }
     },
@@ -8366,6 +12116,11 @@
         "Type": "Map",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "namespace_id": {
         "Type": "String",
         "Computed": true
@@ -8483,6 +12238,11 @@
         "Type": "Int",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "namespace_id": {
         "Type": "String",
         "Computed": true
@@ -8508,6 +12268,152 @@
       "type": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "vault_identity_oidc_client_creds": {
+      "client_id": {
+        "Type": "String",
+        "Description": "The Client ID from Vault.",
+        "Computed": true
+      },
+      "client_secret": {
+        "Type": "String",
+        "Description": "The Client Secret from Vault.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the client."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      }
+    },
+    "vault_identity_oidc_openid_config": {
+      "authorization_endpoint": {
+        "Type": "String",
+        "Description": "The Authorization Endpoint for the provider.",
+        "Computed": true
+      },
+      "grant_types_supported": {
+        "Type": "List",
+        "Description": "The grant types supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "id_token_signing_alg_values_supported": {
+        "Type": "List",
+        "Description": "The signing algorithms supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "issuer": {
+        "Type": "String",
+        "Description": "The URL of the issuer for the provider.",
+        "Computed": true
+      },
+      "jwks_uri": {
+        "Type": "String",
+        "Description": "The well known keys URI for the provider.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the provider."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "request_uri_parameter_supported": {
+        "Type": "Bool",
+        "Description": "Specifies whether Request URI Parameter is supported by the provider.",
+        "Computed": true
+      },
+      "response_types_supported": {
+        "Type": "List",
+        "Description": "The response types supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "scopes_supported": {
+        "Type": "List",
+        "Description": "The scopes supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "subject_types_supported": {
+        "Type": "List",
+        "Description": "The subject types supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "token_endpoint": {
+        "Type": "String",
+        "Description": "The Token Endpoint for the provider.",
+        "Computed": true
+      },
+      "token_endpoint_auth_methods_supported": {
+        "Type": "List",
+        "Description": "The token endpoint auth methods supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "userinfo_endpoint": {
+        "Type": "String",
+        "Description": "The User Info Endpoint for the provider.",
+        "Computed": true
+      }
+    },
+    "vault_identity_oidc_public_keys": {
+      "keys": {
+        "Type": "List",
+        "Description": "The public portion of keys for an OIDC provider. Clients can use them to validate the authenticity of an identity token.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the provider."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       }
     },
     "vault_kubernetes_auth_backend_config": {
@@ -8550,6 +12456,11 @@
         "Description": "Host must be a host string, a host:port pair, or a URL to the base of the Kubernetes API server.",
         "Computed": true
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "pem_keys": {
         "Type": "List",
         "Optional": true,
@@ -8563,6 +12474,11 @@
       }
     },
     "vault_kubernetes_auth_backend_role": {
+      "alias_name_source": {
+        "Type": "String",
+        "Description": "Method used for generating identity aliases.",
+        "Computed": true
+      },
       "audience": {
         "Type": "String",
         "Optional": true,
@@ -8599,6 +12515,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role_name": {
         "Type": "String",
@@ -8665,6 +12586,262 @@
         }
       }
     },
+    "vault_kubernetes_service_account_token": {
+      "backend": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The Kubernetes secret backend to generate service account tokens from."
+      },
+      "cluster_role_binding": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, generate a ClusterRoleBinding to grant permissions across the whole cluster instead of within a namespace.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "kubernetes_namespace": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the Kubernetes namespace in which to generate the credentials."
+      },
+      "lease_duration": {
+        "Type": "Int",
+        "Description": "The duration of the lease in seconds.",
+        "Computed": true
+      },
+      "lease_id": {
+        "Type": "String",
+        "Description": "The lease identifier assigned by Vault.",
+        "Computed": true
+      },
+      "lease_renewable": {
+        "Type": "Bool",
+        "Description": "True if the duration of this lease can be extended through renewal.",
+        "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "role": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the role."
+      },
+      "service_account_name": {
+        "Type": "String",
+        "Description": "The name of the service account associated with the token.",
+        "Computed": true
+      },
+      "service_account_namespace": {
+        "Type": "String",
+        "Description": "The Kubernetes namespace that the service account resides in.",
+        "Computed": true
+      },
+      "service_account_token": {
+        "Type": "String",
+        "Description": "The Kubernetes service account token.",
+        "Computed": true
+      },
+      "ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The TTL of the generated Kubernetes service account token, specified in seconds or as a Go duration format string"
+      }
+    },
+    "vault_kv_secret": {
+      "data": {
+        "Type": "Map",
+        "Description": "Map of strings read from Vault.",
+        "Computed": true
+      },
+      "data_json": {
+        "Type": "String",
+        "Description": "JSON-encoded secret data read from Vault.",
+        "Computed": true
+      },
+      "lease_duration": {
+        "Type": "Int",
+        "Description": "Lease duration in seconds.",
+        "Computed": true
+      },
+      "lease_id": {
+        "Type": "String",
+        "Description": "Lease identifier assigned by Vault.",
+        "Computed": true
+      },
+      "lease_renewable": {
+        "Type": "Bool",
+        "Description": "True if the duration of this lease can be extended through renewal.",
+        "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Full path of the KV-V1 secret."
+      }
+    },
+    "vault_kv_secret_subkeys_v2": {
+      "data": {
+        "Type": "Map",
+        "Description": "Subkeys stored as a map of strings.",
+        "Computed": true
+      },
+      "data_json": {
+        "Type": "String",
+        "Description": "Subkeys for the KV-V2 secret read from Vault.",
+        "Computed": true
+      },
+      "depth": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies the deepest nesting level to provide in the output.If non-zero, keys that reside at the specified depth value will be artificially treated as leaves and will thus be 'null' even if further underlying sub-keys exist."
+      },
+      "mount": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KV-V2 engine is mounted"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Full name of the secret. For a nested secret, the name is the nested path excluding the mount and data prefix. For example, for a secret at 'kvv2/data/foo/bar/baz', the name is 'foo/bar/baz'"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Description": "Full path where the generic secret will be written.",
+        "Computed": true
+      },
+      "version": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies the version to return. If not set the latest version is returned."
+      }
+    },
+    "vault_kv_secret_v2": {
+      "created_time": {
+        "Type": "String",
+        "Description": "Time at which the secret was created",
+        "Computed": true
+      },
+      "custom_metadata": {
+        "Type": "Map",
+        "Description": "Custom metadata for the secret",
+        "Computed": true
+      },
+      "data": {
+        "Type": "Map",
+        "Description": "Map of strings read from Vault.",
+        "Computed": true
+      },
+      "data_json": {
+        "Type": "String",
+        "Description": "JSON-encoded secret data read from Vault.",
+        "Computed": true
+      },
+      "deletion_time": {
+        "Type": "String",
+        "Description": "Deletion time for the secret",
+        "Computed": true
+      },
+      "destroyed": {
+        "Type": "Bool",
+        "Description": "Indicates whether the secret has been destroyed",
+        "Computed": true
+      },
+      "mount": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KV-V2 engine is mounted"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Full name of the secret. For a nested secret, the name is the nested path excluding the mount and data prefix. For example, for a secret at 'kvv2/data/foo/bar/baz', the name is 'foo/bar/baz'"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Description": "Full path where the KVV2 secret is written.",
+        "Computed": true
+      },
+      "version": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Version of the secret to retrieve"
+      }
+    },
+    "vault_kv_secrets_list": {
+      "names": {
+        "Type": "List",
+        "Description": "List of all secret names.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Full KV-V1 path where secrets will be listed."
+      }
+    },
+    "vault_kv_secrets_list_v2": {
+      "mount": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KV-V2 engine is mounted"
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Full named path of the secret. For a nested secret, the name is the nested path excluding the mount and data prefix. For example, for a secret at 'kvv2/data/foo/bar/baz', the name is 'foo/bar/baz'"
+      },
+      "names": {
+        "Type": "List",
+        "Description": "List of all secret names.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
+      "path": {
+        "Type": "String",
+        "Description": "Full path where the KV-V2 secrets are listed.",
+        "Computed": true
+      }
+    },
     "vault_nomad_access_token": {
       "accessor_id": {
         "Type": "String",
@@ -8675,6 +12852,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Nomad secret backend to generate tokens from."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "role": {
         "Type": "String",
@@ -8696,6 +12878,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "rule": {
         "Type": "List",
@@ -8814,6 +13001,11 @@
         "Required": true,
         "Description": "Name of the decryption key to use."
       },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
+      },
       "plaintext": {
         "Type": "String",
         "Description": "Decrypted plain text",
@@ -8845,6 +13037,11 @@
         "Type": "Int",
         "Optional": true,
         "Description": "The version of the key to use for encryption"
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Target namespace. (requires Enterprise)"
       },
       "plaintext": {
         "Type": "String",
